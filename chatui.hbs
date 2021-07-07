@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <script>
+        const ROOM_ID="{{roomId}}";
+        const USER_ID="{{user._id}}";
+        const USERNAME="{{user.username}}";
+        console.log(ROOM_ID);
+        console.log(USERNAME)
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    {{!-- <link rel="stylesheet" href="style4.css"> --}}
+    <script src="https://kit.fontawesome.com/c939d0e917.js"></script>
+    <style>
+      .main{
+        height:100vh;
+      }
+      .aboveconatiner {
+        height: 90vh;
+        display: flex;
+      }
+
+      #main__left {
+        /* flex:0.8; */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main__right {
+        /* flex: 0.2; */
+        /* width: 20vh; */
+        display:block;
+        height: 90vh;
+      }
+
+      .main__videos {
+        flex-grow: 1;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        overflow-y: auto;
+      }
+
+      .main__controls {
+        background-color: #1C1E20;
+      }
+
+      .main__right {
+        background-color: #242324;
+        border-left: 1px solid #3D3D42;
+      }
+
+      .main__controls {
+        color: #D2D2D2;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+      }
+
+      .main__controls__block {
+        display: flex;
+      }
+
+      .main__controls__button {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 10px;
+        min-width: 80px;
+        cursor: pointer;
+      }
+
+      .main__controls__button:hover {
+        background-color: #343434;
+        border-radius: 5px;
+      }
+
+      .main__controls__button i {
+        font-size: 24px;
+      }
+
+/* .main__right {
+    display: flex;
+    flex-direction: column;
+} */
+
+      .main__header {
+        padding-top: 5px;
+        color: #F5F5F5;
+        text-align: center;
+      }
+
+      .main__chat_window {
+        flex-grow: 1;
+        /* min-height: 75vh; */
+        height: 75vh;
+        overflow-y: auto;
+      }
+      .main__participant_window,.main__detail_window{
+        flex-grow: 1;
+        /* min-height: 75vh; */
+        height: 80vh;
+        overflow-y: auto;
+      }
+
+      .messages,.parti,#detail{
+        color: white;
+        list-style: none;
+        padding: 20px;
+      }
+
+      .message,.showp,.showroomid{
+        /* display: block; */
+        width: 35vh;
+        word-wrap:break-word;
+        background-color: #343434;
+        padding-top: 5px;
+        padding: 10px;
+        border-radius: 25px;
+      }
+
+      .main__message_container {
+        padding: 22px 12px;
+        display: flex;
+      }
+
+      .main__message_container input {
+        flex-grow: 1;
+        background-color: transparent;
+        border: none;
+        color: #F5F5F5;
+      }
+
+      .leave_meeting {
+        color: #EB534B;
+      }
+
+      .unmute, .stop {
+        color: #CC3B33;
+      }
+
+
+      #video-grid{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      video{
+        height: 300px;
+        width: 400px;
+        object-fit: cover;
+        padding: 8px;
+        border: thick solid white;
+        background-color:#3D3D42 ;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="aboveconatiner">
+        <div id="main__left">
+          <div class="main__videos">
+            <div id="video-grid">
+            </div>
+          </div>
+        </div>
+        <div class="main__right" id="chatwindow">
+          <div class="main__header">
+            <h6>Chat</h6>
+          </div>
+          <div class="main__chat_window">
+            <ul class="messages">
+               
+            </ul>
+          </div>
+          <div class="main__message_container">
+                <input id="chat_message" type="text" placeholder="Type message here...">
+          </div>
+        </div>
+        <div class="main__right" id="meetingdetails">
+            <div class="main__header">
+                <h6>Meeting Details</h6>
+            </div>
+            <div class="main__detail_window">
+                <ul id="detail">
+                    <li class="showroomid">{{roomId}}</li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="main__right" id="participantwindow">
+            <div class="main__header">
+                <h6>Participants</h6>
+            </div>
+            <div class="main__participant_window">
+                <ul class="parti" id="mem">
+                  {{!-- <li class="showp"><b>{{user.username}}</b></li> --}}
+                </ul>
+
+            </div>
+        </div>
+      </div>
+      <div class="main__controls">
+          <div class="main__controls__block">
+                <div onclick="muteUnmute()" class="main__controls__button main__mute_button">
+                    <i class="fas fa-microphone"></i>
+                    <span>Mute</span>
+                </div>
+                <div onclick="playStop()" class="main__controls__button main__video_button" >
+                    <i class="fas fa-video"></i>
+                    <span>Stop Video</span>
+                </div>
+          </div>
+          <div class="main__controls__block">
+               <div onclick="showdetails()" class="main__controls__button">
+               <i class="fa fa-info-circle"></i>
+                  <span>Details</span>
+               </div>
+               <div onclick="showparticipants()" class="main__controls__button">
+                  <i class="fas fa-user-friends"></i>
+                  <span>Participants</span>
+               </div>
+               <div onclick="showchat()" class="main__controls__button">
+                  <i class="fas fa-comment-alt"></i>
+                  <span>Chat</span>
+               </div>
+          </div>
+          <div class="main__controls__block">
+               <div class="main__controls__button">
+                  <button class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Leave</button>
+                  {{!-- <span class="leave_meeting">Leave</span> --}}
+               </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Leave room</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <a href="/"><button type="button" onclick="leavemeeting()" class="btn btn-secondary">Leave and go to home page</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <script>
+
+
+console.log("helo")
+const socket = io('/')
+// document.getElementByClassName('main__left').flex=1;
+document.getElementById('chatwindow').style.display="none";
+document.getElementById('participantwindow').style.display="none";
+document.getElementById('meetingdetails').style.display="none";
+document.getElementById('main__left').style.flex=1;
+// document.getElementById("chatwindow"). width = "300px";
+
+const videoGrid = document.getElementById('video-grid')
+// console.log(videoGrid);
+const myPeer = new Peer(undefined, {
+  path: '/peerjs',
+  host: '/',
+  port: '4040'
+})
+
+let myVideoStream;
+const myVideo = document.createElement('video')
+// console.log(myVideo);
+myVideo.muted = true;
+
+const peers = {}
+var myId=""
+navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  }).then(stream => {
+    myVideoStream = stream;
+    addVideoStream(myVideo, stream)
+    //$(".parti").append(`<li class="showp"><b>${USERNAME}</b></li>`);
+    myPeer.on('call', call => {
+      call.answer(stream)
+      console.log("answered call")
+      const video = document.createElement('video')
+      call.on('stream', userVideoStream => {
+        addVideoStream(video, userVideoStream)
+      })
+    })
+    socket.on('user-connected', userId => {
+        connectToNewUser(userId, stream)
+      })
+      // input value
+      let text = $("input");
+    //   when press enter send message
+      console.log(text)
+      $('html').keydown(function (e) {
+        if (e.which == 13 && text.val().length !== 0) {
+          socket.emit('message', text.val(), USERNAME);
+          text.val('')
+        }
+      });
+      socket.on("createMessage", (message,uname) => {
+        $(".messages").append(`<li class="message"><b>${uname}</b><br/>${message}</li>`);
+        scrollToBottom()
+      })
+      socket.on("buildparticipants",()=>{
+          var list = document.getElementById("mem");
+          while (list.hasChildNodes()) {  
+            list.removeChild(list.firstChild);
+          }
+          //$(".parti").append(`<li class="showp"><b>${USERNAME}</b></li>`);
+          socket.emit("members",USERNAME) 
+      })
+})
+
+socket.on("participants",(uname)=>{
+    $(".parti").append(`<li class="showp"><b>${uname}</b></li>`);
+})
+
+socket.on('user-disconnected', userId => {
+    if (peers[userId]) peers[userId].close()
+  })
+  
+myPeer.on('open', (id) => {
+    // socket.emit('join-room', ROOM_ID, id)
+    console.log(USER_ID)
+    console.log("user id")
+    myId=id
+    socket.emit('join-room',ROOM_ID,id);
+    //socket.emit('join-room',ROOM_ID,USER_ID);
+})
+function connectToNewUser(userId, stream) {
+    const call = myPeer.call(userId, stream)
+    const video = document.createElement('video')
+    call.on('stream', userVideoStream => {
+      addVideoStream(video, userVideoStream)
+    })
+    call.on('close', () => {
+      video.remove()
+    })
+  
+    peers[userId] = call
+}
+
+
+function addVideoStream(video, stream) {
+    console.log("hello")
+    video.srcObject = stream
+    video.addEventListener('loadedmetadata', () => {
+      video.play()
+    })
+    videoGrid.append(video)
+  }
+
+
+const leavemeeting=()=>{
+  console.log("user left")
+  socket.emit("disconnect")
+}
+
+const scrollToBottom = () => {
+    var d = $('.main__chat_window');
+    d.scrollTop(d.prop("scrollHeight"));
+  }
+  
+  
+  const muteUnmute = () => {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+      myVideoStream.getAudioTracks()[0].enabled = false;
+      setUnmuteButton();
+    } else {
+      setMuteButton();
+      myVideoStream.getAudioTracks()[0].enabled = true;
+    }
+  }
+  
+  const playStop = () => {
+    console.log('object')
+    let enabled = myVideoStream.getVideoTracks()[0].enabled;
+    if (enabled) {
+      myVideoStream.getVideoTracks()[0].enabled = false;
+      setPlayVideo()
+    } else {
+      setStopVideo()
+      myVideoStream.getVideoTracks()[0].enabled = true;
+    }
+  }
+
+
+const setMuteButton = () => {
+    const html = `
+      <i class="fas fa-microphone"></i>
+      <span>Mute</span>
+    `
+    document.querySelector('.main__mute_button').innerHTML = html;
+  }
+  
+  const setUnmuteButton = () => {
+    const html = `
+      <i class="unmute fas fa-microphone-slash"></i>
+      <span>Unmute</span>
+    `
+    document.querySelector('.main__mute_button').innerHTML = html;
+  }
+
+
+const setStopVideo = () => {
+    const html = `
+      <i class="fas fa-video"></i>
+      <span>Stop Video</span>
+    `
+    document.querySelector('.main__video_button').innerHTML = html;
+  }
+  
+
+const setPlayVideo = () => {
+    const html = `
+    <i class="stop fas fa-video-slash"></i>
+      <span>Play Video</span>
+    `
+    document.querySelector('.main__video_button').innerHTML = html;
+  }
+
+function showdetails(){
+    document.getElementById('chatwindow').style.display="none";
+    document.getElementById('participantwindow').style.display="none";
+    if(document.getElementById('meetingdetails').style.display==="none"){
+        document.getElementById('meetingdetails').style.display="inline";
+        document.getElementById('main__left').style.flex=0.8;
+        document.getElementById('meetingdetails').style.flex=0.2;
+    }
+    else{
+        document.getElementById('meetingdetails').style.display="none"
+        document.getElementById('main__left').style.flex=1;
+    }
+    // document.getElementById('meetingdetails').style.display="inline";
+}
+
+function showparticipants(){
+    //$(".parti").append(`<li class="message"><b>user</b></li>`);
+    document.getElementById('chatwindow').style.display="none";
+    document.getElementById('meetingdetails').style.display="none";
+    if(document.getElementById('participantwindow').style.display==="none"){
+        document.getElementById('participantwindow').style.display="inline";
+        document.getElementById('main__left').style.flex=0.8;
+        document.getElementById('participantwindow').style.flex=0.2;
+    }
+    else{
+        document.getElementById('participantwindow').style.display="none"
+        document.getElementById('main__left').style.flex=1;
+    }
+    // document.getElementById('participantwindow').style.display="inline";
+}
+
+function showchat(){
+    document.getElementById('participantwindow').style.display="none";
+    document.getElementById('meetingdetails').style.display="none";
+    if(document.getElementById('chatwindow').style.display==="none"){
+        document.getElementById('chatwindow').style.display="inline";
+        document.getElementById('main__left').style.flex=0.8;
+        document.getElementById('chatwindow').style.flex=0.2;
+    }
+    else{
+        document.getElementById('chatwindow').style.display="none"
+        document.getElementById('main__left').style.flex=1;
+    }
+    // document.getElementById('chatwindow').style.display="inline";
+}
+
+
+
+
+
+//let text = $("#chat_message");
+//$('html').keydown(function (e) {
+//    if (e.which == 13 && text.val().length !== 0) {
+//    //   socket.emit('message', text.val());
+//    $(".messages").append(`<li class="message"><b>user</b><br/>lllllllllllllllvvvvv</li>`);
+//    text.val('')
+//    }
+//});
+    </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+   {{!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script> --}}
+  </body>
+</html>
