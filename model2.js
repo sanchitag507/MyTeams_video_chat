@@ -3,7 +3,8 @@ const mongoose=require("mongoose");
 const userschema=new mongoose.Schema({
     email:{
         type : String,
-        required: true
+        required: true,
+        unique:true
     },
     username:{
         type : String,
@@ -13,6 +14,8 @@ const userschema=new mongoose.Schema({
         type : String,
         required: true
     },
+    resetPasswordToken:{type:String},
+    resetPasswordExpires:{type:Date},
     tasks:[{
         type : String,
     }]

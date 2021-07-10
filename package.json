@@ -4,11 +4,13 @@
   "description": "learning node js",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sanchita Ghosh",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
@@ -20,6 +22,7 @@
     "hbs": "^4.1.2",
     "mongodb": "^3.6.9",
     "mongoose": "^5.12.13",
+    "nodemailer": "^6.6.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "peer": "^0.6.1",
@@ -27,5 +30,8 @@
     "requests": "^0.3.0",
     "socket.io": "^4.1.2",
     "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

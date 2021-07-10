@@ -206,7 +206,7 @@
             </div>
             <div class="main__participant_window">
                 <ul class="parti" id="mem">
-                  {{!-- <li class="showp"><b>{{user.username}}</b></li> --}}
+                  
                 </ul>
 
             </div>
@@ -228,10 +228,10 @@
                <i class="fa fa-info-circle"></i>
                   <span>Details</span>
                </div>
-               <div onclick="showparticipants()" class="main__controls__button">
+               {{!-- <div onclick="showparticipants()" class="main__controls__button">
                   <i class="fas fa-user-friends"></i>
                   <span>Participants</span>
-               </div>
+               </div> --}}
                <div onclick="showchat()" class="main__controls__button">
                   <i class="fas fa-comment-alt"></i>
                   <span>Chat</span>
@@ -270,8 +270,6 @@
 
     <script>
 
-
-console.log("helo")
 const socket = io('/')
 // document.getElementByClassName('main__left').flex=1;
 document.getElementById('chatwindow').style.display="none";
@@ -285,16 +283,15 @@ const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '4040'
+  port: '443'
 })
 
 let myVideoStream;
 const myVideo = document.createElement('video')
-// console.log(myVideo);
 myVideo.muted = true;
-
+let myid;
 const peers = {}
-var myId=""
+const newpeers= {}
 navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
@@ -309,9 +306,16 @@ navigator.mediaDevices.getUserMedia({
       call.on('stream', userVideoStream => {
         addVideoStream(video, userVideoStream)
       })
+      call.on('close', () => {
+        video.remove()
+      })
+      console.log(call.metadata.id)
+      newpeers[call.metadata.id]=call;
     })
     socket.on('user-connected', userId => {
-        connectToNewUser(userId, stream)
+        setTimeout(() => {
+          connectToNewUser(userId, stream);
+        }, 2000)
       })
       // input value
       let text = $("input");
@@ -327,34 +331,39 @@ navigator.mediaDevices.getUserMedia({
         $(".messages").append(`<li class="message"><b>${uname}</b><br/>${message}</li>`);
         scrollToBottom()
       })
-      socket.on("buildparticipants",()=>{
-          var list = document.getElementById("mem");
-          while (list.hasChildNodes()) {  
-            list.removeChild(list.firstChild);
-          }
+      //socket.on("buildparticipants",()=>{
+          //var list = document.getElementById("mem");
+          //while (list.hasChildNodes()) {  
+            //list.removeChild(list.firstChild);
+          //}
           //$(".parti").append(`<li class="showp"><b>${USERNAME}</b></li>`);
-          socket.emit("members",USERNAME) 
-      })
+          //socket.emit("members",USERNAME) 
+      //})
 })
 
-socket.on("participants",(uname)=>{
-    $(".parti").append(`<li class="showp"><b>${uname}</b></li>`);
-})
+//socket.on("participants",(uname)=>{
+    //$(".parti").append(`<li class="showp"><b>${uname}</b></li>`);
+//})
 
 socket.on('user-disconnected', userId => {
-    if (peers[userId]) peers[userId].close()
+    setTimeout(() => {
+    if (peers[userId]){peers[userId].close()}
+    else{
+          if (newpeers[userId]){newpeers[userId].close()}
+        }
+    }, 2000)
   })
   
 myPeer.on('open', (id) => {
     // socket.emit('join-room', ROOM_ID, id)
     console.log(USER_ID)
     console.log("user id")
-    myId=id
+    myid=id;
     socket.emit('join-room',ROOM_ID,id);
     //socket.emit('join-room',ROOM_ID,USER_ID);
 })
 function connectToNewUser(userId, stream) {
-    const call = myPeer.call(userId, stream)
+    const call = myPeer.call(userId, stream, {metadata:{id:myid}})
     const video = document.createElement('video')
     call.on('stream', userVideoStream => {
       addVideoStream(video, userVideoStream)
