@@ -40,5 +40,11 @@ After Cloning the given repo, run-
   - **Meeting Details** - It would contain the Room ID the user is currently in.
  
   - **Leave meeting** - User may click on this button to leave the meeting and go to the home page.
+
+## Agile methodologies used
+
+*Initially I was given the task to only implement the video sharing feature, But later it was said to also integrate the chat room feature in it, So my codebase was modular and flexible enough to integrate this new feature in it*
+
+*The intitial version of the product made by me was in itself complete and deployable, but it was also clean enough to allow testing and adding features to be easily done.*
  
 
