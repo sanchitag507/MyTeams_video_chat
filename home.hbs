@@ -120,58 +120,58 @@
 
 
 
-    <div class="p-5">
-      <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-10 col-sm-8 col-lg-6">
-          <img src="/meet.jpeg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="600" height="400" loading="lazy">
-        </div>
-        <div class="col-lg-6">
-        {{!-- <div class="text-center"></div> --}}
-          <h1 class="display-5 fw-bold lh-1 mb-3" style="color:White;">Online video meet and chat</h1>
-          <p class="lead" style="color:White;">Connect with friends and families with video and audio.</p>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+      <div class="p-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+          <div class="col-10 col-sm-8 col-lg-6">
+            <img src="/meet.jpeg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="600" height="400" loading="lazy">
+          </div>
+          <div class="col-lg-6">
+          {{!-- <div class="text-center"></div> --}}
+            <h1 class="display-5 fw-bold lh-1 mb-3" style="color:White;">Online video meet and chat</h1>
+            <p class="lead" style="color:White;">Connect with your friends and families with video and audio.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><button type="button" class="btn btn-primary btn-lg px-4 me-md-2">New Meeting</button></a>
                     <div class="dropdown-menu">
-                        <button data-toggle="modal" data-target="#exampleModal">Create a meeting for later</button>
+                        <button class="btn btn-primary mx-2" data-toggle="modal" data-target="#exampleModal">Create meeting for later</button>
                         {{!-- <a href="#" class="dropdown-item">Create a meeting for later</a> --}}
-                        <a href="/roomid/{{roomId}}" class="meeting"><button>Start an instant meeting</button></a>
+                        <a href="/roomid/{{roomId}}" class="meeting"><button class="btn btn-primary my-2 mx-2">Start an instant meeting</button></a>
                     </div>
                 </div>
                 <form class="form-inline my-2 my-lg-0" action="joinmeet" method="POST">
                 <input class="form-control mr-sm-2" type="text" name="roomcode" placeholder="Enter room ID" aria-label="Search">
                 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Join</button></form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
 
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Room Id</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Room Id</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h2 id="roomidlater">{{roomId}}</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" onclick="copyFunction()" class="btn btn-primary">Copy</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-        <h2 id="roomidlater">{{roomId}}</h2>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="copyFunction()" class="btn btn-primary">Copy</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 
-<script>
+  <script>
 //    $('#laterroom').hide();
 //$('#roomidlater').hide();
 //function hidefn(){
@@ -180,14 +180,14 @@
 //function showfn(){
 //  $('#laterroom').show();
 //}
-function copyFunction() {
-  var text = document.getElementById("roomidlater").innerHTML;
-  navigator.clipboard.writeText(text).then(function() {
-    alert(text + " copied to clipboard");
-    console.log('Async: Copying to clipboard was successful!');
-  }, function(err) {
-    console.error('Async: Could not copy text: ', err);
-  });
+  function copyFunction() {//fn for copying test
+    var text = document.getElementById("roomidlater").innerHTML;
+    navigator.clipboard.writeText(text).then(function() {
+      alert(text + " copied to clipboard");
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
   //var copyText = document.createElement("textarea");
   //copyText.value = text;
   //console.log(copyText)
@@ -199,8 +199,8 @@ function copyFunction() {
 
   //copy(copyText);
   /* Alert the copied text */
-}
-</script>
+  }
+  </script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 

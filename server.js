@@ -332,6 +332,7 @@ app.post('/forgot', function(req, res, next) {
             //         pass: 'Sanchita@123'
             //     }
             // });
+            //"myteams-video-chat.herokuapp.com"
             var smtpTransport = nodemailer.createTransport("smtps://ghoshsanchita656%40gmail.com:"+encodeURIComponent('Sanchita@123') + "@smtp.gmail.com:465");
             var mailOptions = {
                 to: user.email,
@@ -339,7 +340,7 @@ app.post('/forgot', function(req, res, next) {
                 subject: 'Reset your Password',
                 text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                        'http://' + "myteams-video-chat.herokuapp.com" + '/reset/' + token + '\n\n' +
+                        'http://' + "localhost:4040" + '/reset/' + token + '\n\n' +
                         'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
             smtpTransport.sendMail(mailOptions, function(err) {
