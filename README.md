@@ -20,6 +20,7 @@ After Cloning the given repo, run-
 
 ## Features
 ### User Authentication: 
+ - **Signup , Signin, Logout** - Signin stores the user session for 2 days and Logout clears the **session**.
  - **Authentication**- Using **Passport Local** for authenticating user and **Bcrypt** to hash the password and store it in a Mongodb database.
 
  - **Forgot Password**- In case user forgets his password , he may click on the forgot password and enter his e-mail and a mail would be send to his mail id using **nodemailer** containing the link to reset his password.
