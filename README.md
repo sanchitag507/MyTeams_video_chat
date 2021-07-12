@@ -21,6 +21,7 @@ After Cloning the given repo, run-
 ## Features
 ### User Authentication: 
  - **Signup , Signin, Logout** - Signin stores the user session for 2 days and Logout clears the **session**.
+ 
  - **Authentication**- Using **Passport Local** for authenticating user and **Bcrypt** to hash the password and store it in a Mongodb database.
 
  - **Forgot Password**- In case user forgets his password , he may click on the forgot password and enter his e-mail and a mail would be send to his mail id using **nodemailer** containing the link to reset his password.
@@ -33,6 +34,8 @@ After Cloning the given repo, run-
  
  ### Chat Room
  ***Peer js** is being used to share the Video and Audio among users in the same room.*
+ 
+ ***uuidv4** is used to generate the room id.*
  
   - **Switch On or Off Video or Audio** - User may click on the **stop video** or **stop audio** button to switch on or off their video or audio.
  
