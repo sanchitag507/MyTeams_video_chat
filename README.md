@@ -27,6 +27,7 @@ After Cloning the given repo, run-
  - **Reset Password**- When user clicks on the link on the mail , he would be redirected to a reset password page containing the token generated using **Crypto** which would remain valid for 1 hour. Updating the password would send a confirmation link in his mail id using **nodemailer**.
 
  *User authentication is needed to use other features.*
+ 
  *Once the user is logged in he would be presented with a dashboard containing the options to **Generate a room ID for later use** or **Enter an existing room** or **start an instant meeting** .*
  
  ### Chat Room
